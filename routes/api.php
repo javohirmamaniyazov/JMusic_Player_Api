@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\MusicController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,3 +23,9 @@ Route::post('login', [AuthController::class, 'login']);
 
 Route::apiResource('musics', MusicController::class);
 
+Route::get('call-command', function() {
+  Artisan::call('optimize:clear');
+  Artisan::call('migrate:refresh --seed'); 
+  
+  return "Commands executed successfully";
+});
