@@ -17,7 +17,7 @@ class MusicController extends Controller
     }
     public function index()
     {
-        $musics = Music::all();
+        $musics = Music::paginate(20);
 
         if ($musics->isEmpty()) {
             return response()->json([

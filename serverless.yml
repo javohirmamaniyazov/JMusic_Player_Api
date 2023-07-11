@@ -1,0 +1,49 @@
+service: laravel
+
+provider:
+    name: aws
+    # The AWS region in which to deploy (us-east-1 is the default)
+    region: ca-central-1
+    # Environment variables
+    environment:
+        APP_ENV: production # Or use ${sls:stage} if you want the environment to match the stage
+        DB_HOST: aws.connect.psdb.cloud
+        DB_DATABASE: laravel-api
+        DB_USERNAME: jfwwb8n7n4b4eh76v7ub
+        DB_PASSWORD: pscale_pw_RHn3QaM0G0mICjxHD2QDHTEunNVyLCTqMNj3aSAdd3r
+        # Connect via SSL (https://planetscale.com/docs/concepts/secure-connections)
+        MYSQL_ATTR_SSL_CA: /opt/bref/ssl/cert.pem
+
+package:
+    # Files and directories to exclude from deployment
+    patterns:
+        - '!node_modules/**'
+        - '!public/storage'
+        - '!resources/assets/**'
+        - '!storage/**'
+        - '!tests/**'
+
+functions:
+
+    # This function runs the Laravel website/API
+    web:
+        handler: public/index.php
+        runtime: php-81-fpm
+        timeout: 28 # in seconds (API Gateway has a timeout of 29 seconds)
+        events:
+            - httpApi: '*'
+
+    # This function lets us run artisan commands in Lambda
+    artisan:
+        handler: artisan
+        runtime: php-81-console
+        timeout: 720 # in seconds
+        # Uncomment to also run the scheduler every minute
+        #events:
+        #    - schedule:
+        #          rate: rate(1 minute)
+        #          input: '"schedule:run"'
+
+plugins:
+    # We need to include the Bref plugin
+    - ./vendor/bref/bref
