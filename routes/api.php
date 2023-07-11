@@ -22,10 +22,3 @@ Route::post('logout', [AuthController::class, 'logout']);
 Route::post('login', [AuthController::class, 'login']);
 
 Route::apiResource('musics', MusicController::class);
-
-Route::get('call-command', function() {
-  Artisan::call('optimize:clear');
-  Artisan::call('migrate:refresh --seed'); 
-  
-  return "Commands executed successfully";
-});
